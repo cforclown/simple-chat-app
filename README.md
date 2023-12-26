@@ -29,7 +29,6 @@ Simple chat app
 
 - clone this repo
 - `cp env-example .env`
-- `cp chat-app.ui/env-example chat-app.ui/.env`
 - `docker compose -f docker-compose.dev.yaml up -d`
 - open [http://localhost:8080](http://localhost:8080) on your favorite browser
 - open [http://localhost:8090/api/v1/docs](http://localhost:8090/api/v1/docs) for API Documentation
