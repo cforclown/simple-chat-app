@@ -5,10 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      args:
+        VITE_REST_API_BASE_URL: ${VITE_REST_API_BASE_URL}
+        VITE_REST_API_ROOT_PATH: ${VITE_REST_API_ROOT_PATH}
+        VITE_REST_API_VERSION: ${VITE_REST_API_VERSION}
+        SERVE_PORT: ${SERVE_PORT}
     ports:
-      - ${VITE_SERVE_PORT}:${VITE_SERVE_PORT}
-    environment:
-      VITE_REST_API_BASE_URL: ${VITE_REST_API_BASE_URL}
-      VITE_REST_API_ROOT_PATH: ${VITE_REST_API_ROOT_PATH}
-      VITE_REST_API_VERSION: ${VITE_REST_API_VERSION}
-      VITE_SERVE_PORT: ${VITE_SERVE_PORT}
+      - ${SERVE_PORT}:${SERVE_PORT}

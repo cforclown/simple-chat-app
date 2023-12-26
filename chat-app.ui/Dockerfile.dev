@@ -14,11 +14,26 @@ RUN npm install\
 # Copy the rest of the application code to the container
 COPY . .
 
-ARG VITE_SERVE_PORT
+ARG VITE_REST_API_BASE_URL
+ENV VITE_REST_API_BASE_URL=$VITE_REST_API_BASE_URL
 
-# Build the application
+ARG VITE_REST_API_ROOT_PATH
+ENV VITE_REST_API_ROOT_PATH=${VITE_REST_API_ROOT_PATH}
+
+ARG VITE_REST_API_VERSION
+ENV VITE_REST_API_VERSION=${VITE_REST_API_VERSION}
+
+ARG SERVE_PORT
+ENV SERVE_PORT=${SERVE_PORT}
+
+RUN echo api base url : ${VITE_REST_API_BASE_URL}
+RUN echo api root path: ${VITE_REST_API_ROOT_PATH}
+RUN echo api version  : ${VITE_REST_API_VERSION}
+RUN echo serve port   : ${SERVE_PORT}
+
+# # Build the application
 RUN npm run build
 
-EXPOSE $VITE_SERVE_PORT
+EXPOSE ${SERVE_PORT}
 
-CMD serve -s dist -l ${VITE_SERVE_PORT}
+CMD serve -s dist -l ${SERVE_PORT}

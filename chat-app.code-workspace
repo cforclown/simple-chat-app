@@ -11,6 +11,12 @@
 		},
 		{
 			"path": "chat-app.tf"
+		},
+		{
+			"path": "chat-app.gcp.tf"
+		},
+		{
+			"path": "chat-app.aws.tf"
 		}
 	],
 	"settings": {}

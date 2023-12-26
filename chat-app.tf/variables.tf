@@ -7,7 +7,7 @@ variable "aws_region" {
 
 variable "ecs_task_execution_role_name" {
   description = "ECS task execution role name"
-  default     = "myEcsTaskExecutionRole"
+  default     = "chatAppEcsTaskExecutionRole"
 }
 
 variable "az_count" {

@@ -5,7 +5,7 @@ resource "aws_ecs_cluster" "main" {
 }
 
 #metadata for the resource are defined here
-data "template_file" "chat-app" {
+data "template_file" "chat_app" {
   template = file("./templates/ecs/chat-app.json.tpl")
 
   vars = {
@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "app" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  container_definitions    = data.template_file.chat-app.rendered
+  container_definitions    = data.template_file.chat_app.rendered
 }
 
 #Main task details are defined
