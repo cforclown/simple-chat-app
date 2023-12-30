@@ -1,20 +1,48 @@
 import Joi from 'joi';
 
-export interface IUser {
-  _id: string;
+export interface IUserRaw {
   id: string;
   username: string;
   email: string;
   fullname: string;
+  password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  archived?: boolean;
 }
 
-export const updateUserReqSchema = Joi.object({
+export interface IUser extends Omit<IUserRaw, 'password' | 'archived' | 'createdAt' | 'updatedAt'> {}
+
+export interface ICreateUserPayload {
+  username: string;
+  email: string;
+  password?: string;
+  fullname: string;
+};
+
+export interface IUpdateUserProfileReq {
+  username?: string;
+  email?: string;
+  fullname?: string;
+}
+
+export const updateUserProfileReqSchema = Joi.object<IUpdateUserProfileReq>({
   username: Joi.string(),
-  email: Joi.string().email(),
-  fullname: Joi.string()
+  fullname: Joi.string(),
+  email: Joi.string().email()
 });
 
-export const changePasswordReqSchema = Joi.object({
+export interface IUpdateUserPayload extends IUpdateUserProfileReq {
+  password?: string;
+}
+
+export interface IChangePasswordReq {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export const changePasswordReqSchema = Joi.object<IChangePasswordReq>({
   currentPassword: Joi.string().required(),
   newPassword: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?!.* ).{8,24}$/).required(),
   confirmNewPassword: Joi
@@ -26,7 +54,7 @@ export const changePasswordReqSchema = Joi.object({
 });
 
 export const usersSwagger = {
-  updateUser: {
+  updateUserProfile: {
     type: 'object',
     properties: {
       username: {

@@ -1,12 +1,13 @@
 import { Request } from 'express';
 import { Server } from 'socket.io';
-import { dro, Logger, RestApiException } from 'cexpress-utils/lib';
-import { IMessage, ISendMsgReq, IStartConversationReq, MessagesService } from '.';
-import { IChannelRes, IUser } from '..';
-import { IO_INSTANCE_NAME } from '../../socketio';
-import SIOController from '../../socketio/sio.controller';
 import { HttpStatusCode } from 'axios';
 import { IAMQP } from 'amqp';
+import { dro, Logger, RestApiException } from 'cexpress-utils/lib';
+import { IChannel, IMessage, ISendMsgReq, IStartConversationReq, IUser } from 'chat-app.contracts';
+import { MessagesService } from '.';
+import { IO_INSTANCE_NAME } from '../../socketio';
+import SIOController from '../../socketio/sio.controller';
+import { NullOr } from '../../utils';
 
 export class MessagesController {
   public static readonly INSTANCE_NAME = 'messagesController';
@@ -31,7 +32,7 @@ export class MessagesController {
     return msgs;
   }
 
-  async startConversation ({ app, user: u, body }: Request): Promise<IChannelRes | null> {
+  async startConversation ({ app, user: u, body }: Request): Promise<NullOr<IChannel<IUser>>> {
     const user = u as IUser;
     const payload: IStartConversationReq = body;
 
@@ -66,10 +67,10 @@ export class MessagesController {
     if (receivers.length) {
       const io: Server | undefined | null = app.get(IO_INSTANCE_NAME);
       receivers.forEach(receiver => {
-        io?.to(receiver.toString()).emit('on-message', dro.response(msg));
-        if (!this.sioController.users[receiver.toString()]) { // we only send message to amqp when user is offline
+        io?.to(receiver.id).emit('on-message', dro.response(msg));
+        if (!this.sioController.users[receiver.id]) { // we only send message to amqp when user is offline
           // dont need to wait for the process
-          this.amqp.pushMsg(receiver.toString(), msg).catch(err => Logger.exception(err));
+          this.amqp.pushMsg(receiver.id, msg).catch(err => Logger.exception(err));
         }
       });
     }

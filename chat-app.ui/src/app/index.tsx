@@ -2,13 +2,14 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { useSelector } from 'react-redux';
+import { IUserContext } from 'chat-app.contracts';
 import Loader from '@/components/loader/Loader.style';
 import AlertDialogGlobal from '@/components/alert-dialog/AlertDialogGlobal';
 import { selectTheme } from '@/store/reducers/layout/theme-selectors';
 import { ITheme } from '@/themes/themes';
 import { selectUserContext } from '@/store/reducers/user-context/user-context-selectors';
 import storageService from '@/utils/storage-service';
-import { IUserContext, USER_CONTEXT_STORAGE_KEY, setUserContext } from '@/store/reducers/user-context';
+import { USER_CONTEXT_STORAGE_KEY, setUserContext } from '@/store/reducers/user-context';
 import useAction from '@/hooks/useAction';
 import { validateAccessToken } from '@/pages/auth/auth.service';
 

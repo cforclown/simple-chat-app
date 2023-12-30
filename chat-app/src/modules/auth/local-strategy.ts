@@ -1,6 +1,7 @@
 import { PassportStatic } from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { AuthService, IUser } from '../';
+import { IUser } from 'chat-app.contracts';
+import { AuthService } from '..';
 
 export function InitLocalStrategy (passport: PassportStatic, authService: AuthService): void {
   passport.use(new LocalStrategy(async (username, password, done) => {

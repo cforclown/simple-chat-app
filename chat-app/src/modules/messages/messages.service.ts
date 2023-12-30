@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
-import { ChannelsService, IChannel, IChannelRes } from '..';
-import { IEditMsgReq, IMessage, ISendMsgReq, IStartConversationReq } from '.';
+import { ChannelsService } from '..';
+import { IChannel, IEditMsgReq, IMessage, ISendMsgReq, IStartConversationReq, IUser } from 'chat-app.contracts';
 
 export class MessagesService {
   public static readonly INSTANCE_NAME = 'messagesService';
@@ -16,14 +16,14 @@ export class MessagesService {
   }
 
   // user send message to another for the first time (no channel yet)
-  async startConversation (sender: string, payload: IStartConversationReq): Promise<[IChannelRes, IMessage] | null> {
+  async startConversation (sender: string, payload: IStartConversationReq): Promise<[IChannel<IUser>, IMessage] | null> {
     let channel = await this.channelsService.getChannelDmByUsers(sender, payload.receiver);
     if (!channel) {
       channel = await this.channelsService.createDm([sender, payload.receiver]);
     }
     const result = await this.channelsService.pushMsg(
       channel.id,
-      this.createMsgObj(channel.id, sender, payload.text), true
+      this.createMsgObj(channel.id, sender, payload.text)
     );
     if (!result) {
       return null;
@@ -32,7 +32,7 @@ export class MessagesService {
     return result;
   }
 
-  async sendMsg (channel: string, sender: string, payload: ISendMsgReq): Promise<[IChannel, IMessage] | null> {
+  async sendMsg (channel: string, sender: string, payload: ISendMsgReq): Promise<[IChannel<IUser>, IMessage] | null> {
     const result = await this.channelsService.pushMsg(channel, this.createMsgObj(channel, sender, payload.text));
     if (!result) {
       return null;
@@ -53,10 +53,9 @@ export class MessagesService {
     const id = new Types.ObjectId();
     const createdAt = new Date();
     return {
-      _id: id,
       id: id.toString(),
-      channel: new Types.ObjectId(channel),
-      sender: new Types.ObjectId(sender),
+      channel,
+      sender,
       text,
       createdAt,
       updatedAt: createdAt

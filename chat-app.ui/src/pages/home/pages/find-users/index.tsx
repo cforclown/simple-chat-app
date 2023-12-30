@@ -3,7 +3,7 @@ import SearchInput from '@/components/ui/search-input';
 import HomeContentWrapper from '@/components/wrappers/HomeContentWrapper';
 import { useAPI } from '@/hooks/useApi';
 import { getAPIEndpoint } from '@/utils/call-api';
-import { IUser } from '@/utils/common';
+import { IUser } from 'chat-app.contracts';
 import { useMemo, useState } from 'react';
 import ItemUser from './item-user';
 import withUserContext, { IWithUserContext } from '@/components/HOC/withUserContext';

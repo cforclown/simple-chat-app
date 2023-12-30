@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, HttpStatusCode } from 'axios';
+import { IUserContext } from 'chat-app.contracts';
 import { API_ENDPOINT } from './environment';
 import store, { IAppState } from '@/store';
-import { IUserContext, deleteUserContext, setUserContext } from '@/store/reducers/user-context';
+import { deleteUserContext, setUserContext } from '@/store/reducers/user-context';
 
 export enum HTTPStatusCodes {
   Ok = 200,

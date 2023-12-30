@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import UserCard from '@/components/user-card';
 import useAction from '@/hooks/useAction';
 import { setSelectedChannel as setSelectedChannelAction } from '@/store/reducers/channels';
-import { IUser } from '@/utils/common';
+import { IUser } from 'chat-app.contracts';
 import { useSelector } from 'react-redux';
 import { selectChannels } from '@/store/reducers/channels/channels-selectors';
 

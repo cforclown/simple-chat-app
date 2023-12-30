@@ -7,6 +7,8 @@ import {
   usersSchema
 } from '../modules';
 
+mongoose.Schema.ObjectId.get(v => v != null ? v.toString() : v);
+
 class Database {
   public static readonly INSTANCE_NAME = 'database';
 

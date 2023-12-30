@@ -1,16 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-
-export interface IMessage {
-  _id: string;
-  id: string;
-  channel: string;
-  sender: string;
-  text: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  archived?: boolean;
-}
+import { IMessage } from 'chat-app.contracts';
 
 export interface IMessagesState {
   loading: boolean;

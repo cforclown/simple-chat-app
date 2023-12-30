@@ -103,19 +103,19 @@ describe('users-service', () => {
 
   describe('update', () => {
     it('should successfully update a user', async () => {
-      expect(await usersService.update(mockUser.id, mockUpdateUserPayload)).toEqual(mockUser);
+      expect(await usersService.updateProfile(mockUser.id, mockUpdateUserPayload)).toEqual(mockUser);
     });
 
     it('should throw an error when username is taken', async () => {
       mockUsersDaoGetByUsername.mockReturnValueOnce(mockUser);
 
-      await expect(usersService.update(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+      await expect(usersService.updateProfile(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
     });
 
     it('should throw RestApiException when email already registered', async () => {
       mockUsersDaoGetByEmail.mockReturnValueOnce(Promise.resolve(mockUser));
 
-      await expect(usersService.update(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
+      await expect(usersService.updateProfile(mockUser.id, mockUpdateUserPayload)).rejects.toThrow(RestApiException);
     });
   });
 

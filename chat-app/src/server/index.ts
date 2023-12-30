@@ -30,7 +30,7 @@ export default class Server {
       await this.db.connect();
       Logger.success('| ✅ SUCCESSFULLY CONNECTED TO THE DATABASE');
 
-      await this.amqp.init();
+      await this.amqp.init().catch(() => Logger.warn('| [warn] Cannot connect to AMQP server'));
       Logger.success('| ✅ SUCCESSFULLY CONNECTED TO THE AMQP');
 
       const port = Environment.getPort();

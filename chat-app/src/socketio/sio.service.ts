@@ -1,5 +1,5 @@
-
-import { AuthService, IUser, IUserContext } from '../modules';
+import { IUser, IUserContext } from 'chat-app.contracts';
+import { AuthService } from '../modules';
 
 class SIOService {
   static readonly INSTANCE_NAME = 'sioService';

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { IMessage } from 'chat-app.contracts';
 import Spinner from '@/components/spinner/Spinner';
 import OverflowContainer from '@/components/overflow-container';
 import Message from '../message';
 import withUserContext, { IWithUserContext } from '@/components/HOC/withUserContext';
-import { IMessage } from '@/store/reducers/channels';
 import MessageForm from '../message-form';
 import useAction from '@/hooks/useAction';
 import Loader from '@/components/loader/Loader.style';

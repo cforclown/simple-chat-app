@@ -1,45 +1,60 @@
 import { model, Types } from 'mongoose';
 import { BaseDataAccessObject } from 'cexpress-utils/lib';
-import { IMessage } from '../';
-import { IChannel, IChannelRes } from '.';
+import { IChannel, IChannelRaw, IMessage, IUser } from 'chat-app.contracts';
+import { UsersDao } from '..';
+import { NullOr } from '../../utils';
 
-export class ChannelsDao extends BaseDataAccessObject<IChannel> {
+export class ChannelsDao extends BaseDataAccessObject<IChannelRaw> {
   public static readonly INSTANCE_NAME = 'channelsDao';
   public static readonly MODEL_NAME = 'channels';
 
   constructor () {
-    super(model<IChannel>(ChannelsDao.MODEL_NAME));
+    super(model<IChannelRaw>(ChannelsDao.MODEL_NAME));
   }
 
-  async getChannel (id: string): Promise<Omit<IChannel, 'messages'> | null> {
-    return this.model.findOne({ _id: id, archived: false }).select('-messages').exec();
+  async getChannel (id: string): Promise<NullOr<IChannel>> {
+    return this.model
+      .findOne({ _id: id, archived: false })
+      .select('-messages')
+      .exec();
   }
 
-  async getChannelDmByUsers (user1: string, user2: string): Promise<IChannelRes | null> {
-    return this.model.findOne({
-      users: {
-        $in: [new Types.ObjectId(user1), new Types.ObjectId(user2)]
+  async getChannelDmByUsers (user1: string, user2: string): Promise<NullOr<IChannel<IUser>>> {
+    const channel = await this.model
+      .findOne({
+        users: {
+          $in: [
+            new Types.ObjectId(user1),
+            new Types.ObjectId(user2)
+          ]
+        }
+      })
+      .populate({
+        path: 'users',
+        select: UsersDao.UNSELECT_FORBIDDEN_FIELDS
+      })
+      .select('-messages')
+      .exec();
+
+    return channel?.toObject();
+  }
+
+  async createChannel (payload: Record<string, any>): Promise<IChannel<IUser>> {
+    const channel = await this.model.findOneAndUpdate({ _id: new Types.ObjectId() }, payload, {
+      new: true,
+      upsert: true,
+      runValidators: true,
+      setDefaultsOnInsert: true,
+      populate: {
+        path: 'users',
+        select: UsersDao.UNSELECT_FORBIDDEN_FIELDS
       }
     });
+
+    return channel.toObject();
   }
 
-  async createChannel(payload: Record<string, any>): Promise<IChannel>;
-  async createChannel(payload: Record<string, any>, populateUsers: true): Promise<IChannelRes>;
-  async createChannel (payload: Record<string, any>, populateUsers?: boolean): Promise<IChannel | IChannelRes> {
-    const createdChannel = await this.create(payload);
-    if (!populateUsers) {
-      return createdChannel;
-    }
-
-    const channel = await this.model.findById<IChannelRes>(createdChannel).populate('users').exec();
-    if (!channel) {
-      throw new Error('Unexpected error occured when creating channel');
-    }
-
-    return channel;
-  }
-
-  async getUserChannels (user: string): Promise<IChannelRes[]> {
+  async getUserChannels (user: string): Promise<IChannel<IUser>[]> {
     return this.model
       .aggregate([
         {
@@ -56,7 +71,11 @@ export class ChannelsDao extends BaseDataAccessObject<IChannel> {
             as: 'users',
             pipeline: [{
               $project: {
-                password: 0
+                password: 0,
+                avatar: 0,
+                archived: 0,
+                createdAt: 0,
+                updatedAt: 0
               }
             }]
           }
@@ -96,55 +115,70 @@ export class ChannelsDao extends BaseDataAccessObject<IChannel> {
             }
           }
         },
-        {
-          $sort: {
-            updatedAt: -1
-          }
-        },
-        {
-          $project: {
-            messages: 0
-          }
-        }
+        { $sort: { updatedAt: -1 } },
+        { $project: { messages: 0 } }
       ])
       .exec();
   }
 
-  async pushMsg (channel: string, msg: IMessage): Promise<[IChannel, IMessage] | null>;
-  async pushMsg (channel: string, msg: IMessage, populateUsers: true): Promise<[IChannelRes, IMessage] | null>;
-  async pushMsg (channel: string, msg: IMessage, populateUsers?: boolean): Promise<[IChannel | IChannelRes, IMessage] | null> {
-    const pipeline = this.model.findOneAndUpdate({ _id: channel }, {
-      $push: { messages: msg }
-    }, { new: true });
-    if (populateUsers) {
-      pipeline.populate('users');
-    }
-    const channelDoc = await pipeline.exec();
-    if (!channelDoc) {
+  async pushMsg (channelId: string, msg: IMessage): Promise<[IChannel<IUser>, IMessage] | null> {
+    const channel = await this.model
+      .findOneAndUpdate(
+        { _id: channelId },
+        {
+          $push: {
+            messages: {
+              ...msg,
+              _id: new Types.ObjectId(msg.id),
+              sender: new Types.ObjectId(msg.sender)
+            }
+          }
+        },
+        { new: true }
+      )
+      .populate({
+        path: 'users',
+        select: UsersDao.UNSELECT_FORBIDDEN_FIELDS
+      })
+      .exec();
+
+    if (!channel) {
       return null;
     }
 
-    return [channelDoc, msg];
+    return [channel.toObject(), msg];
   }
 
-  async editMsg (channel: string, msgId: string, text: string): Promise<IMessage | null> {
-    const channelDoc = await this.model.findById(channel);
-    if (!channelDoc) {
+  async editMsg (channelId: string, msgId: string, text: string): Promise<IMessage | null> {
+    const channel = await this.model
+      .findOneAndUpdate(
+        {
+          _id: channelId,
+          'messages._id': new Types.ObjectId(msgId)
+        },
+        {
+          $set: {
+            'messages.$.text': text
+          }
+        },
+        {
+          new: true
+        }
+      ).exec();
+    if (!channel) {
       return null;
     }
-    const msgDoc: IMessage | undefined = channelDoc.messages.find(m => m.id === msgId);
+
+    const msgDoc: IMessage | undefined = channel.messages.find(m => m.id === msgId);
     if (!msgDoc) {
       return null;
     }
 
-    msgDoc.text = text;
-    await channelDoc.save();
-
     return msgDoc;
   }
 
-  async readMsgs (channel: string, user: string): Promise<void> {
-    await this.model.updateOne({ _id: channel }, [{
+  async readMsgs (channelId: string, user: string): Promise<void> {
+    await this.model.updateOne({ _id: channelId }, [{
       $set: {
         messages: {
           $map: {
@@ -170,15 +204,15 @@ export class ChannelsDao extends BaseDataAccessObject<IChannel> {
     }]);
   }
 
-  async getMsgs (channel: string): Promise<IMessage[] | null> {
-    const channelDoc = await this.model
-      .findOne({ _id: channel, archived: false })
+  async getMsgs (channelId: string): Promise<IMessage[] | null> {
+    const channel = await this.model
+      .findOne({ _id: channelId, archived: false })
       .sort({ createdAt: 'descending' })
       .exec();
-    if (!channelDoc) {
+    if (!channel) {
       return null;
     }
 
-    return channelDoc.messages;
+    return channel.messages;
   }
 }

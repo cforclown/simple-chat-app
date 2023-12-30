@@ -1,4 +1,4 @@
-import { IChannel } from '@/store/reducers/channels';
+import { IChannel } from '../../store/reducers/channels';
 import UserAvatar from '../user-avatar';
 import { Label } from '../ui/label';
 

@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { IUser } from '@/utils/common';
+import { IUser, IChannel as IChannelUser } from 'chat-app.contracts';
 
 export enum EChannelRoles {
   OWNER='owner',
@@ -8,37 +8,7 @@ export enum EChannelRoles {
   MEMBER='member'
 }
 
-export interface IChannelUserRole {
-  user: string;
-  role: EChannelRoles;
-}
-
-export interface IMessage {
-  _id: string;
-  id: string;
-  channel: string;
-  sender: string;
-  text: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  archived?: boolean;
-}
-
-export interface IChannel {
-  _id: string;
-  id: string;
-  name?: string; // only when type==='group'
-  type: 'dm' | 'group';
-  desc?: string;
-  users: IUser[];
-  roles?: IChannelUserRole[]; //  undefined if type==='dm'
-  messages: IMessage[];
-  unreadMessages?: number;
-  lastMessage?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  archived?: boolean;
-}
+export interface IChannel extends IChannelUser<IUser> {}
 
 export interface IChannelsState {
   loading: boolean;

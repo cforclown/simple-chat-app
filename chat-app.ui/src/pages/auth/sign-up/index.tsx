@@ -14,6 +14,7 @@ import { setUserContext } from '@/store/reducers/user-context';
 import FormField from '../form-field';
 import { Form } from '@/components/ui/form';
 import { signup } from '../auth.service';
+import { IRegisterUserReq } from 'chat-app.contracts';
 
 const formSchema = yup.object().shape({
   fullname: yup.string().required('Please enter your Full Name'),
@@ -57,7 +58,7 @@ export default function SignUp(): JSX.Element {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<IRegisterUserReq>({
     resolver: yupResolver(formSchema),
     defaultValues: {},
   });

@@ -1,10 +1,10 @@
 import { Request } from 'express';
 import { HttpStatusCode } from 'axios';
 import { BaseController, RestApiException } from 'cexpress-utils/lib';
-import { IUser } from '..';
-import { ChannelsService, IChannel, IChannelRes } from '.';
+import { IChannel, IChannelRaw, IUser } from 'chat-app.contracts';
+import { ChannelsService } from '.';
 
-export class ChannelsController extends BaseController<IChannel> {
+export class ChannelsController extends BaseController<IChannelRaw> {
   public static readonly INSTANCE_NAME = 'channelsController';
 
   private readonly channelsService: ChannelsService;
@@ -18,11 +18,11 @@ export class ChannelsController extends BaseController<IChannel> {
     this.updateGroup = this.updateGroup.bind(this);
   }
 
-  async getUserChannels ({ user }: Request): Promise<Omit<IChannelRes, 'messages'>[]> {
+  async getUserChannels ({ user }: Request): Promise<IChannel<IUser>[]> {
     return this.channelsService.getUserChannels((user as IUser).id);
   }
 
-  async createGroup ({ user, body }: Request): Promise<IChannelRes> {
+  async createGroup ({ user, body }: Request): Promise<IChannel<IUser>> {
     return this.channelsService.createGroup((user as IUser).id, body);
   }
 

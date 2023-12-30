@@ -23,6 +23,7 @@
     "awilix": "^6.0.0",
     "axios": "^1.6.2",
     "cexpress-utils": "^1.6.3",
+    "chat-app.contracts": "file:../chat-app.contracts",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { ILoginReq } from 'chat-app.contracts';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Loader from '@/components/loader/Loader.style';
 import H1 from '@/components/typography/h1';
@@ -24,7 +25,7 @@ export default function SignIn(): JSX.Element {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<ILoginReq>({
     resolver: yupResolver(formSchema),
     defaultValues: {},
   });

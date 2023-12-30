@@ -23,6 +23,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "@tanstack/react-table": "^8.10.7",
     "axios": "^1.6.2",
+    "chat-app.contracts": "file:../chat-app.contracts",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "i18next": "^23.7.6",

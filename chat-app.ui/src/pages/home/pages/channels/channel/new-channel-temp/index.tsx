@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { IUser } from 'chat-app.contracts';
 import OverflowContainer from '@/components/overflow-container';
 import MessageForm from '../message-form';
 import { startConversation } from '../../channels.service';
-import { IUser } from '@/utils/common';
 import useAction from '@/hooks/useAction';
 import { setSelectedChannelAction } from '@/store/reducers/channels/channels-actions';
 import { selectSelectedChannel } from '@/store/reducers/channels/channels-selectors';

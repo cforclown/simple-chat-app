@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { IUser } from '..';
+import { IUser } from './users';
 
 export interface IUserContext {
   user: IUser;
@@ -13,6 +13,11 @@ export interface ILoginReq {
   password: string;
 }
 
+export const loginReqSchema = Joi.object<ILoginReq>({
+  username: Joi.alternatives().try(Joi.string(), Joi.string().email()).required(),
+  password: Joi.string().required()
+});
+
 export interface IRegisterUserReq {
   username: string;
   email: string;
@@ -20,15 +25,6 @@ export interface IRegisterUserReq {
   password: string;
   confirmPassword: string;
 }
-
-export interface IRefreshTokenReq {
-  refreshToken: string;
-}
-
-export const LoginReqSchema = Joi.object<ILoginReq>({
-  username: Joi.alternatives().try(Joi.string(), Joi.string().email()).required(),
-  password: Joi.string().required()
-});
 
 /**
  * NOTE!
@@ -48,7 +44,7 @@ export const LoginReqSchema = Joi.object<ILoginReq>({
  * - it must be 8-24 characters long.
  * - Usage of special character is optional.
  */
-export const RegisterReqSchema = Joi.object<IRegisterUserReq>({
+export const registerReqSchema = Joi.object<IRegisterUserReq>({
   username: Joi.string().regex(/^(?=[a-zA-Z0-9._]{6,24}$)(?!.*[_.]{2})[^_.].*[^_.]$/).required(),
   email: Joi.string().email().required(),
   fullname: Joi.string().required(),
@@ -61,7 +57,11 @@ export const RegisterReqSchema = Joi.object<IRegisterUserReq>({
     })
 });
 
-export const RefreshTokenReqSchema = Joi.object({
+export interface IRefreshTokenReq {
+  refreshToken: string;
+}
+
+export const refreshTokenReqSchema = Joi.object<IRefreshTokenReq>({
   refreshToken: Joi.string().required()
 });
 

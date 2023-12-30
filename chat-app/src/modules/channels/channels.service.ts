@@ -1,10 +1,11 @@
-import { Types } from 'mongoose';
 import { some } from 'lodash';
 import { BaseService, RestApiException } from 'cexpress-utils/lib';
-import { IMessage, IUser, UsersService } from '../';
-import { ChannelsDao, IChannel, IChannelRes, ICreateDmChannelReq, ICreateGroupReq, IUpdateChannelReq, IUpdateGroupReq } from '.';
+import { IChannel, IChannelRaw, ICreateDmChannelReq, ICreateGroupReq, IMessage, IUpdateChannelReq, IUpdateGroupReq, IUser } from 'chat-app.contracts';
+import { UsersService } from '..';
+import { ChannelsDao } from '.';
+import { NullOr } from '../../utils';
 
-export class ChannelsService extends BaseService<IChannel> {
+export class ChannelsService extends BaseService<IChannelRaw> {
   public static readonly INSTANCE_NAME = 'channelsService';
 
   constructor (private readonly channelsDao: ChannelsDao, private readonly usersService: UsersService) {
@@ -14,29 +15,29 @@ export class ChannelsService extends BaseService<IChannel> {
     this.usersService = usersService;
   }
 
-  async getChannelDmByUsers (user1: string, user2: string): Promise<IChannelRes | null> {
+  async getChannelDmByUsers (user1: string, user2: string): Promise<NullOr<IChannel<IUser>>> {
     return this.channelsDao.getChannelDmByUsers(user1, user2);
   }
 
-  async getUserChannels (user: string): Promise<Omit<IChannelRes, 'messages'>[]> {
+  async getUserChannels (user: string): Promise<IChannel<IUser>[]> {
     return this.channelsDao.getUserChannels(user);
   }
 
-  async createDm (users: [string, string]): Promise<IChannelRes> {
-    const usersDocs = await Promise.all(users.map(user => this.usersService.get(user)));
-    if (some(usersDocs, user => !user)) {
+  async createDm (users: [string, string]): Promise<IChannel<IUser>> {
+    const checkUsers = await Promise.all(users.map(user => this.usersService.get(user)));
+    if (some(checkUsers, user => !user)) {
       throw new RestApiException('Some user id is invalid');
     }
 
     const dmChannel: ICreateDmChannelReq = {
       type: 'dm',
-      users: usersDocs.map(user => new Types.ObjectId((user as IUser).id)) as [Types.ObjectId, Types.ObjectId]
+      users
     };
 
-    return this.channelsDao.createChannel(dmChannel, true);
+    return this.channelsDao.createChannel(dmChannel);
   }
 
-  async createGroup (user: string, payload: ICreateGroupReq): Promise<IChannelRes> {
+  async createGroup (user: string, payload: ICreateGroupReq): Promise<IChannel<IUser>> {
     const usersDocs = await Promise.all(payload.users.map(user => this.usersService.get(user)));
     if (some(usersDocs, user => !user)) {
       throw new RestApiException('Some user id is invalid');
@@ -49,7 +50,7 @@ export class ChannelsService extends BaseService<IChannel> {
       users
     };
 
-    return this.channelsDao.createChannel(groupChannel, true);
+    return this.channelsDao.createChannel(groupChannel);
   }
 
   async updateGroup (channel: string, payload: IUpdateGroupReq): Promise<IChannel | null> {
@@ -74,10 +75,8 @@ export class ChannelsService extends BaseService<IChannel> {
     return this.update(groupChannel);
   }
 
-  async pushMsg (channel: string, msg: IMessage): Promise<[IChannel, IMessage] | null>
-  async pushMsg (channel: string, msg: IMessage, populateUsers: true): Promise<[IChannelRes, IMessage] | null>
-  async pushMsg (channel: string, msg: IMessage, populateUsers?: boolean): Promise<[IChannel | IChannelRes, IMessage] | null> {
-    return this.channelsDao.pushMsg(channel, msg, populateUsers as any);
+  async pushMsg (channel: string, msg: IMessage): Promise<[IChannel<IUser>, IMessage] | null> {
+    return this.channelsDao.pushMsg(channel, msg);
   }
 
   async editMsg (channel: string, msgId: string, text: string): Promise<IMessage | null> {

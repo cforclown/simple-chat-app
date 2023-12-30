@@ -1,6 +1,13 @@
 import { hashPassword, RestApiException } from 'cexpress-utils/lib';
-import { IChangePasswordPayload, ICreateUserPayload, IUpdateUserPayload, IUser, IUserDaoOpts, IUserRes, UsersDao } from '.';
-import { ILoginReq } from '../auth';
+import {
+  IChangePasswordReq,
+  ICreateUserPayload,
+  ILoginReq,
+  IUpdateUserPayload,
+  IUser
+} from 'chat-app.contracts';
+import { NullOr } from '../../utils';
+import { UsersDao } from '.';
 
 export class UsersService {
   private readonly usersDao: UsersDao;
@@ -9,15 +16,15 @@ export class UsersService {
     this.usersDao = usersDao;
   }
 
-  async authenticate ({ username, password }: ILoginReq): Promise<IUserRes | null> {
+  async authenticate ({ username, password }: ILoginReq): Promise<NullOr<IUser>> {
     return this.usersDao.authenticate({
       username,
       password: (await hashPassword(password))
-    }, { plain: true });
+    });
   }
 
-  get (userId: string, opts?: IUserDaoOpts): Promise<IUser | null> {
-    return this.usersDao.get(userId, opts);
+  get (userId: string): Promise<NullOr<IUser>> {
+    return this.usersDao.get(userId);
   }
 
   getAll (query: string): Promise<IUser[]> {
@@ -36,10 +43,10 @@ export class UsersService {
       throw new RestApiException('Email already registered');
     }
 
-    return this.usersDao.create(payload, { plain: true });
+    return this.usersDao.create(payload);
   }
 
-  async update (userId: string, payload: IUpdateUserPayload): Promise<IUser | null> {
+  async updateProfile (userId: string, payload: IUpdateUserPayload): Promise<NullOr<IUser>> {
     const [user, isUsernameTaken, isEmailRegistered] = await Promise.all([
       this.usersDao.get(userId),
       payload.username ? this.usersDao.getByUsername(payload.username) : false,
@@ -58,7 +65,7 @@ export class UsersService {
     return this.usersDao.update({ id: userId, ...payload });
   }
 
-  async changePassword (userId: string, payload: IChangePasswordPayload): Promise<IUserRes | null> {
+  async changePassword (userId: string, payload: IChangePasswordReq): Promise<NullOr<IUser>> {
     const user = await this.usersDao.get(userId);
     if (!user) {
       throw new RestApiException('User not found');
@@ -71,7 +78,7 @@ export class UsersService {
     }
 
     return this.usersDao.update({
-      id: user._id,
+      id: user.id,
       password: (await hashPassword(payload.newPassword))
     });
   }

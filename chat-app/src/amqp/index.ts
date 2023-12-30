@@ -1,5 +1,5 @@
 import amqp, { Channel, Connection } from 'amqplib';
-import { IMessage } from '../modules';
+import { IMessage } from 'chat-app.contracts';
 import { Environment } from '../utils';
 
 export interface IAMQP {

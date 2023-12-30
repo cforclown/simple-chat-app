@@ -1,4 +1,4 @@
-import { IUserContext } from '@/store/reducers/user-context';
+import { ILoginReq, IRegisterUserReq, IUserContext } from 'chat-app.contracts';
 import { callMainAPI, getAuthEndpoint } from '@/utils/call-api';
 import { IMetadataField } from '@/utils/metadata';
 
@@ -21,12 +21,12 @@ export const signinFields: IMetadataField<any>[] = [
   }
 ];
 
-export const signin = (credentials: Record<string, any>): Promise<IUserContext> => callMainAPI(
+export const signin = (credentials: ILoginReq): Promise<IUserContext> => callMainAPI(
   getAuthEndpoint('/login', 'POST'),
   credentials,
 );
 
-export const signup = (payload: Record<string, any>): Promise<IUserContext> => callMainAPI(
+export const signup = (payload: IRegisterUserReq): Promise<IUserContext> => callMainAPI(
   getAuthEndpoint('/register', 'POST'),
   payload,
 );

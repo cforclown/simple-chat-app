@@ -4,10 +4,11 @@ import { io, Socket } from 'socket.io-client';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { HttpStatusCode } from 'axios';
-import { CallAPIException, IMainAPIResponse } from '@/utils/call-api';
-import { IUserContext, setUserContext } from '@/store/reducers/user-context';
-import { SOCKETIO_ENDPOINT } from '@/utils/environment';
 import { useDispatch } from 'react-redux';
+import { IUserContext } from 'chat-app.contracts';
+import { CallAPIException, IMainAPIResponse } from '@/utils/call-api';
+import { setUserContext } from '@/store/reducers/user-context';
+import { SOCKETIO_ENDPOINT } from '@/utils/environment';
 
 export type IEventResponseWrapper<T> = IMainAPIResponse<T>
 

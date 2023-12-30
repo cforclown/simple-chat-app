@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RequestHandler, validateBody, validateParams } from 'cexpress-utils/lib';
-import { UpdateUserPayloadSchema, UsersController } from '.';
+import { updateUserProfileReqSchema } from 'chat-app.contracts';
+import { UsersController } from '.';
 import { idSchema } from '../../schemas';
 
 export const USERS_ROUTER_INSTANCE_NAME = 'usersRouter';
@@ -49,7 +50,7 @@ export function UsersRouter (usersController:UsersController): Router {
    *      patch:
    *          tags:
    *              - Users
-   *          description: Update user
+   *          description: Update user  profile
    *          responses:
    *              '200':
    *                  description: OK
@@ -61,9 +62,9 @@ export function UsersRouter (usersController:UsersController): Router {
    *              content:
    *                  application/json:
    *                      schema:
-   *                          $ref: '#/components/schemas/updateUser'
+   *                          $ref: '#/components/schemas/updateUserProfile'
    */
-  router.patch('/', validateBody(UpdateUserPayloadSchema), RequestHandler(usersController.update));
+  router.patch('/', validateBody(updateUserProfileReqSchema), RequestHandler(usersController.updateProfile));
 
   /**
    * @swagger

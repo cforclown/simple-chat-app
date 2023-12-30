@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RequestHandler, validateBody, validateParams } from 'cexpress-utils/lib';
-import { ChannelsController, createGroupReqSchema, updateGroupReqSchema } from '..';
+import { createGroupReqSchema, updateGroupReqSchema } from 'chat-app.contracts';
+import { ChannelsController } from '..';
 import { idSchema } from '../../schemas';
 
 export const CHANNELS_ROUTER_INSTANCE_NAME = 'channelsRouter';

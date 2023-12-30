@@ -1,13 +1,6 @@
-import { IUser } from '@/utils/common';
+import { IUserContext } from 'chat-app.contracts';
 import storageService from '@/utils/storage-service';
 import { createSlice } from '@reduxjs/toolkit';
-
-export interface IUserContext {
-  user: IUser;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
 
 export interface IUserContextState {
   context?: IUserContext;

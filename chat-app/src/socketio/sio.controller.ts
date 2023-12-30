@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
 import { dro, Logger, RestApiException } from 'cexpress-utils/lib';
-import { IUser } from '../modules';
+import { IUser } from 'chat-app.contracts';
 import SIOService from './sio.service';
 import { ExtSocket } from './sio.utils';
 

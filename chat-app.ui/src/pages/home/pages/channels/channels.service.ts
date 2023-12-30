@@ -1,5 +1,6 @@
-import { IChannel, IMessage } from '@/store/reducers/channels';
+import { IMessage } from 'chat-app.contracts';
 import { callProtectedMainAPI, getAPIEndpoint } from '@/utils/call-api';
+import { IChannel } from '@/store/reducers/channels';
 
 export const getChannels = () => callProtectedMainAPI(getAPIEndpoint('/channels'));
 export const startConversation = (receiver: string, text: string): Promise<IChannel> => callProtectedMainAPI(

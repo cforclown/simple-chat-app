@@ -2,8 +2,8 @@ import express from 'express';
 import { HttpStatusCode } from 'axios';
 import { verify } from 'jsonwebtoken';
 import { RestApiException } from 'cexpress-utils/lib';
-import { IUser } from '..';
-import { AuthService, IUserContext } from '.';
+import { IUser, IUserContext } from 'chat-app.contracts';
+import { AuthService } from '.';
 import { Environment } from '../../utils';
 
 export class AuthController {

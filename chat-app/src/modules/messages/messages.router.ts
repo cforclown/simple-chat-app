@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { RequestHandler, validateBody, validateParams } from 'cexpress-utils/lib';
-import { MessagesController, sendMsgReqSchema, startConversationReqSchema } from '.';
+import { sendMsgReqSchema, startConversationReqSchema } from 'chat-app.contracts';
+import { MessagesController } from '.';
 import { idSchema } from '../../schemas';
 
 export const MESSAGES_ROUTER_INSTANCE_NAME = 'messagesRouter';

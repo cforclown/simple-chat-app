@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { Sidebar as ReactProSidebar } from 'react-pro-sidebar';
 import { selectTheme } from '@/store/reducers/layout/theme-selectors';
 import SidebarHeader from './sidebar-header';
-import { IUser } from '@/utils/common';
+import { IUser } from 'chat-app.contracts';
 import withUserContext, { IWithUserContext } from '@/components/HOC/withUserContext';
 import { selectChannels } from '@/store/reducers/channels/channels-selectors';
-import { IChannel } from '@/store/reducers/channels';
 import SidebarFooter from './sidebar-footer';
 import SidebarContentChannels from './sidebar-content/sidebar-content-channels';
+import { IChannel } from '@/store/reducers/channels';
 
 export interface ISidebar extends IWithUserContext {
   collapsed: boolean;

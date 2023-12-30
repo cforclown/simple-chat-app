@@ -2,8 +2,9 @@ import express from 'express';
 import { HttpStatusCode } from 'axios';
 import passport from 'passport';
 import { dro, RequestHandler, validateBody } from 'cexpress-utils/lib';
+import { loginReqSchema, refreshTokenReqSchema, registerReqSchema } from 'chat-app.contracts';
 import { Environment } from '../../utils';
-import { AuthController, LoginReqSchema, RefreshTokenReqSchema, RegisterReqSchema } from '.';
+import { AuthController } from '.';
 
 export const AUTH_ROUTER_INSTANCE_NAME = 'authRouter';
 export const AUTH_BASE_API_PATH = 'auth';
@@ -37,7 +38,7 @@ export function AuthRouter (authController: AuthController): express.Router {
     })
   );
 
-  router.post('/login/test', validateBody(LoginReqSchema), RequestHandler(authController.login));
+  router.post('/login/test', validateBody(loginReqSchema), RequestHandler(authController.login));
   router.get('/login/verify', RequestHandler(authController.verify));
   router.get('/login/error', async (req, res) => {
     res.status(HttpStatusCode.NotFound).send(dro.error('The email and/or password that you have entered is incorrect'));
@@ -60,7 +61,7 @@ export function AuthRouter (authController: AuthController): express.Router {
    *                      schema:
    *                          $ref: '#/components/schemas/register'
    */
-  router.post('/register', validateBody(RegisterReqSchema), RequestHandler(authController.register));
+  router.post('/register', validateBody(registerReqSchema), RequestHandler(authController.register));
 
   /**
    * @swagger
@@ -79,7 +80,7 @@ export function AuthRouter (authController: AuthController): express.Router {
    *                      schema:
    *                          $ref: '#/components/schemas/refreshToken'
    */
-  router.post('/refresh', validateBody(RefreshTokenReqSchema), RequestHandler(authController.refresh));
+  router.post('/refresh', validateBody(refreshTokenReqSchema), RequestHandler(authController.refresh));
 
   /**
    * @swagger
@@ -113,7 +114,7 @@ export function AuthRouter (authController: AuthController): express.Router {
    *                      schema:
    *                          $ref: '#/components/schemas/refreshToken'
    */
-  router.put('/validate', validateBody(RefreshTokenReqSchema), RequestHandler(authController.validate));
+  router.put('/validate', validateBody(refreshTokenReqSchema), RequestHandler(authController.validate));
 
   return router;
 }

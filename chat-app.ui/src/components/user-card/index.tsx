@@ -1,6 +1,6 @@
 import UserAvatar from '../user-avatar';
 import { Label } from '../ui/label';
-import { IUser } from '@/utils/common';
+import { IUser } from 'chat-app.contracts';
 
 interface IUserCard {
   user: IUser;

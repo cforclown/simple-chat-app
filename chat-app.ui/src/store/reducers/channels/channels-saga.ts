@@ -1,13 +1,14 @@
 import { takeLatest, all, fork, put, select } from 'redux-saga/effects';
+import { cloneDeep } from 'lodash';
+import { IMessage } from 'chat-app.contracts';
 import { getChannelsAction, setSelectedChannelAction } from './channels-actions';
-import { IChannel, setChannelsLoading, setChannels, setSelectedChannel, IMessage } from '.';
+import { setChannelsLoading, setChannels, setSelectedChannel, IChannel } from '.';
 import { sagaWrapper, sagaWrapperWithLoading } from '@/store/store-utils';
 import { ISendMsgPayload, getChannels, readMsgs, sendMsg } from '../../../pages/home/pages/channels/channels.service';
 import { selectChannels, selectSelectedChannel } from './channels-selectors';
 import { IReducerAction } from '@/utils/common';
 import { pushMsg } from '../messages';
 import { onMsgAction, sendMsgAction } from '../messages/messages-actions';
-import { cloneDeep } from 'lodash';
 
 function* setLoading(loading: boolean) {
   yield put(setChannelsLoading(loading));

@@ -1,7 +1,8 @@
 import { Request } from 'express';
 import { HttpStatusCode } from 'axios';
 import { RestApiException } from 'cexpress-utils/lib';
-import { IUser, UsersService } from '.';
+import { IUser } from 'chat-app.contracts';
+import { UsersService } from '.';
 
 export class UsersController {
   public static readonly INSTANCE_NAME = 'usersController';
@@ -13,7 +14,7 @@ export class UsersController {
 
     this.get = this.get.bind(this);
     this.getAll = this.getAll.bind(this);
-    this.update = this.update.bind(this);
+    this.updateProfile = this.updateProfile.bind(this);
     this.delete = this.delete.bind(this);
   }
 
@@ -29,8 +30,8 @@ export class UsersController {
     return this.usersService.getAll((query as Record<string, any>).query);
   }
 
-  async update ({ user, body }: Request): Promise<IUser> {
-    const updatedUser = await this.usersService.update((user as IUser).id, body);
+  async updateProfile ({ user, body }: Request): Promise<IUser> {
+    const updatedUser = await this.usersService.updateProfile((user as IUser).id, body);
     if (!updatedUser) {
       throw new RestApiException('User not found');
     }
@@ -47,7 +48,11 @@ export class UsersController {
     return result;
   }
 
-  async delete ({ params }: Request): Promise<string> {
+  async delete ({ user, params }: Request): Promise<string> {
+    if ((user as IUser).id !== params.id) {
+      throw new RestApiException('Action not allowed', HttpStatusCode.NotAcceptable);
+    }
+
     const result = await this.usersService.delete(params.id);
     if (!result) {
       throw new RestApiException('User not found');

@@ -1,10 +1,10 @@
 import { selectTheme } from '@/store/reducers/layout/theme-selectors';
 import { Menu, menuClasses } from 'react-pro-sidebar';
 import { useSelector } from 'react-redux';
+import { IUser } from 'chat-app.contracts';
 import SidebarItemChannel from '../sidebar-item-channel';
-import { IChannel } from '@/store/reducers/channels';
-import { IUser } from '@/utils/common';
 import OverflowContainer from '@/components/overflow-container';
+import { IChannel } from '@/store/reducers/channels';
 
 interface ISidebarContentChannels {
   channels: (IChannel & { withUser?: IUser })[];

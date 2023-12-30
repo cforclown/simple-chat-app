@@ -1,18 +1,16 @@
 import { Types } from 'mongoose';
 import {
-  IChannelRes,
+  EChannelRoles,
+  IChannel,
   ICreateDmChannelReq,
   ICreateGroupReq,
   IMessage,
-  IMessageRes,
   IUpdateGroupReq
-} from '../modules';
-import { EChannelRoles } from '../modules/channels';
+} from 'chat-app.contracts';
 import { mockUser } from './mock-users-data';
 
 const mockObjectId1 = new Types.ObjectId();
-export const mockChannelDm1: IChannelRes = {
-  _id: mockObjectId1.toString(),
+export const mockChannelDm1: IChannel = {
   id: mockObjectId1.toString(),
   name: 'channel name',
   type: 'dm',
@@ -21,8 +19,7 @@ export const mockChannelDm1: IChannelRes = {
 };
 
 const mockObjectId2 = new Types.ObjectId();
-export const mockChannelDm2: IChannelRes = {
-  _id: mockObjectId2.toString(),
+export const mockChannelDm2: IChannel = {
   id: mockObjectId2.toString(),
   name: 'channel name',
   type: 'dm',
@@ -30,8 +27,7 @@ export const mockChannelDm2: IChannelRes = {
   users: [mockUser]
 };
 
-export const mockChannelGroup: IChannelRes = {
-  _id: mockObjectId1.toString(),
+export const mockChannelGroup: IChannel = {
   id: mockObjectId1.toString(),
   name: 'channel name',
   type: 'group',
@@ -41,7 +37,7 @@ export const mockChannelGroup: IChannelRes = {
 
 export const mockCreateChannelDmReq: ICreateDmChannelReq = {
   type: 'dm',
-  users: [new Types.ObjectId(), new Types.ObjectId()]
+  users: [new Types.ObjectId().toString(), new Types.ObjectId().toString()]
 };
 
 export const mockCreateGroupPayload: ICreateGroupReq = {
@@ -67,19 +63,17 @@ export const mockUpdateGroupPayload: IUpdateGroupReq = {
 const msgId = new Types.ObjectId();
 
 export const mockMsg: IMessage = {
-  _id: msgId,
   id: msgId.toString(),
-  channel: new Types.ObjectId(),
+  channel: mockChannelDm1.id,
   sender: mockUser.id,
   text: 'mock message text',
   createdAt: new Date()
 };
 
-export const mockMsgRes: IMessageRes = {
-  _id: msgId.toString(),
+export const mockMsgRes: IMessage = {
   id: msgId.toString(),
-  channel: mockChannelDm1._id,
+  channel: mockChannelDm1.id,
   sender: mockUser.id,
   text: 'mock message text',
-  createdAt: '2023-12-18T12:31:18.260Z'
+  createdAt: new Date('2023-12-18T12:31:18.260Z')
 };

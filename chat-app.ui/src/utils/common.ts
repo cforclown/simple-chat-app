@@ -1,19 +1,3 @@
-export interface IUser {
-  _id: string;
-  id: string;
-  username: string;
-  fullname: string;
-  email?: string | null;
-  avatar?: string;
-}
-
-export interface IAccessToken {
-  user: IUser;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
-
 export interface IReducerActionWithPayload<T> {
   type: string,
   payload: T

@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import UserAvatar from '@/components/user-avatar';
+import { IUser } from 'chat-app.contracts';
 import { IChannel } from '@/store/reducers/channels';
-import { IUser } from '@/utils/common';
 
 interface ISidebarMenuItem {
   channel: IChannel;

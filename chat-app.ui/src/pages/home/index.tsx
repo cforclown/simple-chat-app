@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
+import { IMessage } from 'chat-app.contracts';
 import { collapseSidebar, hideSidebar, setIsSM, showSidebar, uncollapseSidebar } from '@/store/reducers/layout';
 import Header from './header/header.style';
 import Content from './content';
@@ -13,7 +14,6 @@ import { getChannelsAction } from '@/store/reducers/channels/channels-actions';
 import useSocketIOClient, { socketEvent } from '@/hooks/useSocketIO';
 import withUserContext, { IWithUserContext } from '@/components/HOC/withUserContext';
 import { onMsgAction } from '@/store/reducers/messages/messages-actions';
-import { IMessage } from '@/store/reducers/channels';
 
 interface IHome extends IWithUserContext {
   className?:string

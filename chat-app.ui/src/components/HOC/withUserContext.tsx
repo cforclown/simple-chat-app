@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { IUserContext } from '@/store/reducers/user-context';
+import { IUserContext } from 'chat-app.contracts';
 import Loader from '../loader/Loader.style';
 import { selectUserContext } from '@/store/reducers/user-context/user-context-selectors';
 import { useTranslation } from 'react-i18next';

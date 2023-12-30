@@ -1,9 +1,9 @@
 import { sign, verify } from 'jsonwebtoken';
 import { HttpStatusCode } from 'axios';
 import { RestApiException } from 'cexpress-utils/lib';
-import { Environment } from '../../utils';
-import { IUser, UsersService } from '..';
-import { ILoginReq, IRegisterUserReq, IUserContext } from '.';
+import { ILoginReq, IRegisterUserReq, IUser, IUserContext } from 'chat-app.contracts';
+import { Environment, NullOr } from '../../utils';
+import { UsersService } from '..';
 
 export class AuthService {
   public static readonly INSTANCE_NAME = 'authService'
@@ -15,14 +15,14 @@ export class AuthService {
   }
 
   async getUserById (userId: string): Promise<IUser> {
-    const user = await this.usersService.get(userId, { plain: true });
+    const user = await this.usersService.get(userId);
     if (!user) {
       throw new RestApiException('User not found');
     }
     return user;
   }
 
-  async authenticate (payload: ILoginReq): Promise<IUser | null> {
+  async authenticate (payload: ILoginReq): Promise<NullOr<IUser>> {
     return this.usersService.authenticate(payload);
   }
 
