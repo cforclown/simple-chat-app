@@ -1,7 +1,10 @@
+# Main file used to create an ECS cluster
+
 resource "aws_ecs_cluster" "main" {
-  name = "chat-app-cluster"
+  name = "midSemApp-cluster"
 }
 
+#metadata for the resource are defined here
 data "template_file" "chat_app" {
   template = file("./templates/ecs/chat-app.json.tpl")
 
@@ -14,6 +17,7 @@ data "template_file" "chat_app" {
   }
 }
 
+#Task definition along with required details for the task
 resource "aws_ecs_task_definition" "app" {
   family                   = "chat-app-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
@@ -24,6 +28,8 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions    = data.template_file.chat_app.rendered
 }
 
+#Main task details are defined
+#We used FARGATE cluster because it is automatically managed by AWS
 resource "aws_ecs_service" "main" {
   name            = "chat-app-service"
   cluster         = aws_ecs_cluster.main.id

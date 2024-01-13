@@ -1,6 +1,8 @@
+# variables.tf
+
 variable "aws_region" {
   description = "The AWS region things are created in"
-  default     = "ap-south-1"
+  default     = "us-west-2"
 }
 
 variable "ecs_task_execution_role_name" {
@@ -15,7 +17,7 @@ variable "az_count" {
 
 variable "app_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "cforclown/chat-app"
+  default     = "cforclown/chat-app:tagname"
 }
 
 variable "app_port" {
@@ -25,7 +27,7 @@ variable "app_port" {
 
 variable "app_count" {
   description = "Number of docker containers to run"
-  default     = 1
+  default     = 4
 }
 
 variable "health_check_path" {

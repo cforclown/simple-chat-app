@@ -10,9 +10,6 @@
 			"path": "chat-app.contracts"
 		},
 		{
-			"path": "chat-app.tf"
-		},
-		{
 			"path": "chat-app.gcp.tf"
 		},
 		{
